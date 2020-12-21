@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
+import kotlinx.android.synthetic.main.activity_main.*
 
 
 
@@ -16,17 +17,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //ViewPager2の初期化
-//        R.id.viewPager2.apply {
-//            var adapter = viewPagerAdapter
-//            var orientation = ViewPager2.ORIENTATION_HORIZONTAL
-//            var offscreenPageLimit = viewPagerAdapter.itemCount
-//        }
+     //   ViewPager2の初期化
+        viewPager2.apply {
+            adapter = viewPagerAdapter
+            orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            offscreenPageLimit = viewPagerAdapter.itemCount
+        }
 
-//        TabLayoutMediator(tabLayout,viewPager2){
-//            tab,position ->
-//            tab.setText(viewPagerAdapter.titleIds[position])
-//        }.attach()
+        TabLayoutMediator(tabLayout,viewPager2){
+            tab,position ->
+            tab.setText(viewPagerAdapter.titleIds[position])
+        }.attach()
 
 
     }
