@@ -12,13 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 
 class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+
+    //取得したJsonデータを解析し、Shop型Objectとして生成したものを格納するリスト
+    private val items = mutableListOf<Shop>()
     // 一覧画面から登録するときのコールバック（FavoriteFragmentへ通知するメソッド)
     var onClickAddFavorite: ((Shop) -> Unit)? = null
     // 一覧画面から削除するときのコールバック（ApiFragmentへ通知するメソッド)
     var onClickDeleteFavorite: ((Shop) -> Unit)? = null
-    //取得したJsonデータを解析し、Shop型Objectとして生成したものを格納するリスト
-    private val items = mutableListOf<Shop>()
-
     //表示リスト更新時に呼び出すメソッド
     fun refresh(list: List<Shop>){
         items.apply {

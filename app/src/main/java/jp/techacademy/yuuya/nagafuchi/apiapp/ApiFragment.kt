@@ -1,5 +1,6 @@
 package jp.techacademy.yuuya.nagafuchi.apiapp
 
+import android.content.Context
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -20,6 +21,13 @@ class ApiFragment: Fragment() {
     private val apiAdapter by lazy { ApiAdapter(requireContext()) }
     private val handler = Handler(Looper.getMainLooper())
 
+    private var fragmentCallback : FragmentCallback? = null //Fragment ->ActivityにFavoriteの変更を通知する
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if(context is FragmentCallback) fragmentCallback = context
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_api,container,false)// fragment_api.xmlが反映されたViewを作成して、returnします
     }
@@ -27,6 +35,16 @@ class ApiFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         //初期化処理
+        apiAdapter.apply {
+            onClickAddFavorite = {
+                //Adapterの処理をそのままActivityに通知する
+                fragmentCallback?.onAddFavorite(it)
+            }
+            onClickDeleteFavorite ={
+                //Adapterの処理をそのままActivityに通知する
+                fragmentCallback?.onDeleteFavorite(it.id)
+            }
+        }
         //RecyclerViewの初期化
         recyclerView.apply {
             adapter = apiAdapter
@@ -36,6 +54,9 @@ class ApiFragment: Fragment() {
             updateData()
         }
         updateData()
+    }
+    fun updateView() { // お気に入りが削除されたときの処理（Activityからコールされる）
+        recyclerView.adapter?.notifyDataSetChanged() // RecyclerViewのAdapterに対して再描画のリクエストをする
     }
     private fun updateData(){
         val url = StringBuilder()

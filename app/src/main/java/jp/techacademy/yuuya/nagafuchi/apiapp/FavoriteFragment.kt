@@ -17,14 +17,14 @@ class FavoriteFragment: Fragment() {
     private val favoriteAdapter by lazy { FavoriteAdapter(requireContext()) }
 
     // FavoriteFragment -> MainActivity に削除を通知する
-//    private var fragmentCallback : FragmentCallback? = null
-//
-//    override fun onAttach(context: Context) {
-//        super.onAttach(context)
-//        if (context is FragmentCallback) {
-//            fragmentCallback = context
-//        }
-//    }
+    private var fragmentCallback : FragmentCallback? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is FragmentCallback) {
+            fragmentCallback = context
+        }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         // fragment_favorite.xmlが反映されたViewを作成して、returnします
@@ -38,7 +38,7 @@ class FavoriteFragment: Fragment() {
         favoriteAdapter.apply {
             // Adapterの処理をそのままActivityに通知
             onClickDeleteFavorite = {
-//                fragmentCallback?.onDeleteFavorite(it.id)
+                fragmentCallback?.onDeleteFavorite(it.id)
             }
         }
         // RecyclerViewの初期化
