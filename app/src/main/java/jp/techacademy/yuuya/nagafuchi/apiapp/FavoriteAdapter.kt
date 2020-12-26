@@ -18,6 +18,35 @@ class FavoriteAdapter(private val context: Context):RecyclerView.Adapter<Recycle
     //お気に入り画面から削除するときのコールバック(ApiFragmentへ通知するメソッド）
     var onClickDeleteFavorite:((FavoriteShop) -> Unit)? = null
 
+    // Itemを押したときのメソッド
+    var onClickItem:((String) -> Unit)? = null
+
+
+    /**
+     * 更新用メソッド
+     */
+    fun refresh(list:List<FavoriteShop>){
+        items.apply {
+            clear()//itemsを空に
+            addAll(list)//itemsをlistをすべて追加
+        }
+        notifyDataSetChanged()//recylerViewを再描画させる
+    }
+    /**
+     * お気に入りが1件もない時に、「お気に入りはありません」を出すための処理
+     */
+    override fun getItemCount(): Int {
+        return if(items.isEmpty()) 1 else items.size
+    }
+
+    /**
+     *  onCreateViewHolderの台に引数はここできめる。
+     *  //条件によってViewTypeを返すようにすると、一つのRecyclerViewで様々なViewがある物が作れる
+     */
+    override fun getItemViewType(position: Int): Int {
+        return if(items.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_ITEM
+    }
+
     /**
      * お気に入り画面のViewHolderオブジェクトの生成
      */
@@ -30,27 +59,13 @@ class FavoriteAdapter(private val context: Context):RecyclerView.Adapter<Recycle
         }
     }
 
-//更新用メソッド
-    fun refresh(list:List<FavoriteShop>){
-        items.apply {
-            clear()//itemsを空に
-            addAll(list)//itemsをlistをすべて追加
-        }
-    notifyDataSetChanged()//recylerViewを再描画させる
-    }
-
-
-//お気に入りが1件もない時に、「お気に入りはありません」を出す
-    override fun getItemCount(): Int {
-        return if(items.isEmpty()) 1 else items.size
-    }
-
-    override fun getItemViewType(position: Int): Int {
-        return if(items.isEmpty()) VIEW_TYPE_EMPTY else VIEW_TYPE_ITEM
-    }
+    /**
+     * ViewHolderの結合用メソッド
+     */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder is FavoriteItemViewHolder)
-        updateFavoriteItemViewHolder(holder,position)
+        if (holder is FavoriteItemViewHolder){
+            updateFavoriteItemViewHolder(holder,position)
+        }
     }
     //ViewHolder内のUI部品などをセットする
     private fun updateFavoriteItemViewHolder(holder: FavoriteItemViewHolder,position: Int){
@@ -59,6 +74,7 @@ class FavoriteAdapter(private val context: Context):RecyclerView.Adapter<Recycle
             rootView.apply {
                 setBackgroundColor(ContextCompat.getColor(context,if(position % 2 == 0)
                     android.R.color.white else android.R.color.darker_gray))
+                setOnClickListener { onClickItem?.invoke(data.url) }
             }
             nameTextView.text = data.name
             Picasso.get().load(data.imageUrl).into(imageView)

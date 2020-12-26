@@ -19,24 +19,33 @@ class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerVie
     var onClickAddFavorite: ((Shop) -> Unit)? = null
     // 一覧画面から削除するときのコールバック（ApiFragmentへ通知するメソッド)
     var onClickDeleteFavorite: ((Shop) -> Unit)? = null
+    // Itemを押したときのメソッド
+    var onClickItem:((String) -> Unit)? = null
+
+
     //表示リスト更新時に呼び出すメソッド
     fun refresh(list: List<Shop>){
+        update(list,false)
+    }
+    fun add(list:List<Shop>){
+        update(list,true)
+    }
+    fun update(list: List<Shop>,isAdd:Boolean){
         items.apply {
-            clear()
-            addAll(list)
+            if(!isAdd){//追加の問はClearしない
+                clear()
+            }
+            addAll(list) //itemsにlistをすべて追加
         }
-        notifyDataSetChanged() // recyclerViewを再描画させる
+        notifyDataSetChanged() //recyclerViewを再描画
     }
 
-
-    override fun getItemCount(): Int {
-        // itemsプロパティに格納されている要素数を返す
-        return items.size
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ApiItemViewHolder(LayoutInflater.from(context).inflate(R.layout.recycler_favorite, parent, false))
 
     }
+
+
     class ApiItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
         // レイアウトファイルからidがrootViewのConstraintLayoutオブジェクトを取得し、代入
         val rootView : ConstraintLayout= view.findViewById(R.id.rootView)
@@ -47,7 +56,10 @@ class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerVie
         // レイアウトファイルからidがfavoriteImageViewのImageViewオブジェクトを取得し、代入
         val favoriteImageView: ImageView= view.findViewById(R.id.favoriteImageView)
     }
-
+    override fun getItemCount(): Int {
+        // itemsプロパティに格納されている要素数を返す
+        return items.size
+    }
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if(holder is ApiItemViewHolder){
             updateApiItemViewHolder(holder,position)
@@ -62,6 +74,9 @@ class ApiAdapter(private val context: Context): RecyclerView.Adapter<RecyclerVie
                 // 偶数番目と奇数番目で背景色を変更させる
                 setBackgroundColor(ContextCompat.getColor(context,
                         if (position % 2 == 0) android.R.color.white else android.R.color.darker_gray))
+                setOnClickListener {
+                    onClickItem?.invoke(if(data.couponUrls.sp.isNotEmpty()) data.couponUrls.sp else data.couponUrls.pc)
+                }
             }
             // nameTextViewのtextプロパティに代入されたオブジェクトのnameプロパティを代入
             nameTextView.text=data.name
