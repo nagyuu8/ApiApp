@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(),FragmentCallback {
             .setPositiveButton(android.R.string.ok){_,_ ->
            deleteFavorite(id)
             }
-            .setNegativeButton(android.R.string.cancel){_,_,->}
+            .setNegativeButton(android.R.string.cancel){_,_ ->}
             .create()
             .show()
     }
