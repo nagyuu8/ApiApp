@@ -2,6 +2,7 @@ package jp.techacademy.yuuya.nagafuchi.apiapp
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AlertDialog
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(),FragmentCallback {
     private val viewPagerAdapter by lazy{ViewPagerAdapter(this)}
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("test","onCreate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -31,8 +33,22 @@ class MainActivity : AppCompatActivity(),FragmentCallback {
 
     }
 
-    override fun onClickItem(url: String) {
-        WebViewActivity.start(this, url)
+    override fun onRestart() {
+        Log.d("test","onRestart")
+        super.onRestart()
+        (viewPagerAdapter.fragments[VIEW_PAGER_POSITION_API] as ApiFragment).updateView()
+        (viewPagerAdapter.fragments[VIEW_PAGER_POSITTION_FAVORITE] as FavoriteFragment).updateData()
+    }
+
+
+    override fun onClickItem(shop: Shop) {
+        Log.d("test","新着一覧Itemがクリックされました。")
+        WebViewActivity.start(this, shop)
+    }
+
+    override fun onClickFavorite(favoriteShop: FavoriteShop) {
+        Log.d("test","お気に入り済み一覧Itemがクリックされました。")
+        WebViewActivity.startFavorite(this,favoriteShop)
     }
 
     override fun onAddFavorite(shop: Shop) {

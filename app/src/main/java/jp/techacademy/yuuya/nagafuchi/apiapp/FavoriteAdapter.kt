@@ -19,7 +19,7 @@ class FavoriteAdapter(private val context: Context):RecyclerView.Adapter<Recycle
     var onClickDeleteFavorite:((FavoriteShop) -> Unit)? = null
 
     // Itemを押したときのメソッド
-    var onClickItem:((String) -> Unit)? = null
+    var onClickItem:((FavoriteShop) -> Unit)? = null
 
 
     /**
@@ -74,7 +74,7 @@ class FavoriteAdapter(private val context: Context):RecyclerView.Adapter<Recycle
             rootView.apply {
                 setBackgroundColor(ContextCompat.getColor(context,if(position % 2 == 0)
                     android.R.color.white else android.R.color.darker_gray))
-                setOnClickListener { onClickItem?.invoke(data.url) }
+                setOnClickListener { onClickItem?.invoke(data) }
             }
             nameTextView.text = data.name
             Picasso.get().load(data.imageUrl).into(imageView)

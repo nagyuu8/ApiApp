@@ -43,7 +43,7 @@ class FavoriteFragment: Fragment() {
             }
             //Itemをクリックしたとき
             onClickItem = {
-                fragmentCallback?.onClickItem(it)
+                fragmentCallback?.onClickFavorite(it)
             }
         }
         // RecyclerViewの初期化
